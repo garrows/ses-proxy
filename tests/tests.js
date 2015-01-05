@@ -13,7 +13,7 @@ describe('Send Email', function() {
     var transporter = nodemailer.createTransport(smtpTransport({
       host: 'localhost',
       port: 25,
-      debug: true
+      // debug: true
     }));
 
     transporter.on('log', function(data) {
@@ -22,8 +22,8 @@ describe('Send Email', function() {
 
     // setup e-mail data with unicode symbols
     var mailOptions = {
-      from: 'Fred Foo ✔ <foo@example.com>',
-      to: 'bar@example.com, baz@example.com',
+      from: 'Glen Arrowsmith ✔ <glen.arrowsmith@itoc.com.au>',
+      to: 'glen.arrowsmith@itoc.com.au',
       subject: 'Hello ✔',
       text: 'Hello world ✔',
       html: '<b>Hello world ✔</b>'
@@ -34,8 +34,6 @@ describe('Send Email', function() {
       should(error).not.be.ok;
       should(info).be.ok;
       info.should.have.property('response');
-
-      console.log('Message sent: ' + info.response);
 
       testsDone(error);
     });

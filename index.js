@@ -32,11 +32,10 @@ var server = net.createServer(function(c) { //'connection' listener
       if (data == '.\r\n') {
         console.log('Done sending.')
         client.isReadingData = false;
-        return;
+        c.write('250 Ok: queued as 12345\n');
+      } else {
+        client.data += data;
       }
-
-      client.data += data;
-
 
     } else {
 
@@ -68,6 +67,11 @@ var server = net.createServer(function(c) { //'connection' listener
         case data.indexOf('DATA') === 0:
           client.isReadingData = true;
           c.write('354 End data with <CR><LF>.<CR><LF>\n');
+
+          break;
+
+        case data.indexOf('QUIT') === 0:
+          c.end('221 Bye\n');
 
           break;
 

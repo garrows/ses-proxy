@@ -1,24 +1,24 @@
 var should = require('should'),
   nodemailer = require('nodemailer'),
-  smtpTransport = require('nodemailer-smtp-transport'),
-  credentials = require('./ses-credentials.json');
+  smtpTransport = require('nodemailer-smtp-transport');
 
 
 
 describe('Send Email', function() {
 
   it('should send an email successfully', function(testsDone) {
+    this.timeout(5000);
 
     // create reusable transporter object using SMTP transport
     var transporter = nodemailer.createTransport(smtpTransport({
       host: 'localhost',
       port: 25,
-      // auth: {
-      //   user: credentials.accessKeyId,
-      //   pass: credentials.secretAccessKey
-      // },
-      ignoreTLS: true
+      debug: true
     }));
+
+    transporter.on('log', function(data) {
+      console.log('LOG!!!!', data);
+    })
 
     // setup e-mail data with unicode symbols
     var mailOptions = {
@@ -31,7 +31,6 @@ describe('Send Email', function() {
 
     // send mail with defined transport object
     transporter.sendMail(mailOptions, function(error, info) {
-      console.log(error);
       should(error).not.be.ok;
       should(info).be.ok;
       info.should.have.property('response');

@@ -28,4 +28,4 @@ node_modules
 .lock-wscript
 
 # Test credentials
-tests/ses-credentials.json
+ses-credentials.json

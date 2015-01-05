@@ -1,0 +1,34 @@
+{
+  "name": "ses-proxy",
+  "version": "1.0.0",
+  "description": "Proxy SMTP emails to Amazon's SES (Simple Email Service)",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha tests/tests.js",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/garrows/ses-proxy.git"
+  },
+  "keywords": [
+    "email",
+    "ses",
+    "smtp",
+    "proxy",
+    "amazon",
+    "aws"
+  ],
+  "author": "Glen Arrowsmith",
+  "license": "GPL v3.0",
+  "bugs": {
+    "url": "https://github.com/garrows/ses-proxy/issues"
+  },
+  "homepage": "https://github.com/garrows/ses-proxy",
+  "devDependencies": {
+    "mocha": "^2.1.0",
+    "nodemailer": "^1.3.0",
+    "nodemailer-smtp-transport": "^0.1.13",
+    "should": "^4.4.2"
+  }
+}

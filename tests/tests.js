@@ -1,6 +1,7 @@
 var should = require('should'),
   nodemailer = require('nodemailer'),
-  smtpTransport = require('nodemailer-smtp-transport');
+  smtpTransport = require('nodemailer-smtp-transport'),
+  credentials = require('./ses-credentials.json');
 
 
 
@@ -12,16 +13,17 @@ describe('Send Email', function() {
     var transporter = nodemailer.createTransport(smtpTransport({
       host: 'localhost',
       port: 25,
-      auth: {
-        user: 'test',
-        pass: 'test'
-      }
+      // auth: {
+      //   user: credentials.accessKeyId,
+      //   pass: credentials.secretAccessKey
+      // },
+      ignoreTLS: true
     }));
 
     // setup e-mail data with unicode symbols
     var mailOptions = {
-      from: 'Fred Foo ✔ <foo@blurdybloop.com>',
-      to: 'bar@blurdybloop.com, baz@blurdybloop.com',
+      from: 'Fred Foo ✔ <foo@example.com>',
+      to: 'bar@example.com, baz@example.com',
       subject: 'Hello ✔',
       text: 'Hello world ✔',
       html: '<b>Hello world ✔</b>'
@@ -29,6 +31,7 @@ describe('Send Email', function() {
 
     // send mail with defined transport object
     transporter.sendMail(mailOptions, function(error, info) {
+      console.log(error);
       should(error).not.be.ok;
       should(info).be.ok;
       info.should.have.property('response');

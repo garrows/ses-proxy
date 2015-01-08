@@ -44,10 +44,6 @@ var server = net.createServer(function(c) { //'connection' listener
   c.on('data', function(dataRaw) {
     var data = dataRaw.toString();
 
-    // var commandRegEx = /[A-Za-z]+/;
-    // var command = commandRegEx.exec(data)[0];
-    // console.log('command', command);
-
     if (client.isReadingData == true) {
 
       client.data += data;

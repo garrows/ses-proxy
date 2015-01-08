@@ -1,17 +1,20 @@
 var fs = require('fs'),
   async = require('async'),
   AWS = require('aws-sdk'),
-  utf8 = require('utf8'),
-  mimelib = require('mimelib');
+  path = require('path');
 
-function SesSender() {
-
+function SesSender(optConfig) {
   var credentialsFilePath = './ses-credentials.json';
+  if (optConfig) {
+    credentialsFilePath = optConfig;
+  }
 
   if (fs.existsSync(credentialsFilePath)) {
-    AWS.config.loadFromPath('./ses-credentials.json');
+    AWS.config.loadFromPath(credentialsFilePath);
+  } else if (fs.existsSync(path.join(process.cwd(), credentialsFilePath))) {
+    AWS.config.loadFromPath(path.join(process.cwd(), credentialsFilePath));
   } else {
-    console.warn('Warning: Missing credentials file.')
+    console.warn('Warning: Can not find credentials file.')
   }
 
   this.messageQueue = async.queue(this.processClient.bind(this), 1);

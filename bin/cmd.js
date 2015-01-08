@@ -1,5 +1,3 @@
-var server = require('../index.js');
-
 var program = require('commander');
 
 program
@@ -8,7 +6,5 @@ program
   .option('-c, --config <path>', 'set config path. defaults to ./ses-credentials.conf')
   .parse(process.argv);
 
-program.port = program.port ? program.port : 25;
-program.config = program.config ? program.config : './ses-credentials.json';
-
+var server = require('../index.js');
 server(program.port, program.config);

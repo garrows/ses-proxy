@@ -2,7 +2,7 @@ var net = require('net'),
   SesSender = require('./SesSender.js');
 
 
-var sesSender = new SesSender();
+var sesSender;
 
 var createClient = function() {
   return {
@@ -105,6 +105,7 @@ var server = net.createServer(function(c) { //'connection' listener
 
 var port = 25;
 var portSpecified = false;
+var config;
 
 var start = function(port) {
   server.listen(port);
@@ -112,6 +113,7 @@ var start = function(port) {
 
 server.on('listening', function(err) {
   console.log('Started SES-Proxy on port', port);
+  sesSender = new SesSender(config);
 });
 
 server.on('error', function(err) {
@@ -130,10 +132,11 @@ server.on('error', function(err) {
 
 });
 
-module.exports = function(optPort) {
+module.exports = function(optPort, optConfig) {
   if (optPort) {
     portSpecified = true;
     port = optPort;
   }
+  config = optConfig;
   start(port);
 }

@@ -13,11 +13,12 @@ describe('Send Email', function() {
     var transporter = nodemailer.createTransport(smtpTransport({
       host: 'localhost',
       port: 25,
-      // debug: true
+      debug: true
     }));
 
+    //Turn this on with the debug:true in smtpTransport
     transporter.on('log', function(data) {
-      console.log('LOG!!!!', data);
+      console.log(data);
     })
 
     // setup e-mail data with unicode symbols

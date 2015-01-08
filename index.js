@@ -29,7 +29,6 @@ var server = net.createServer(function(c) { //'connection' listener
     console.log('client disconnected.', client);
   });
 
-
   c.on('error', function(error) {
     console.log('socket error', error);
   });
@@ -45,9 +44,6 @@ var server = net.createServer(function(c) { //'connection' listener
   c.on('data', function(dataRaw) {
     var data = dataRaw.toString();
 
-    console.log('client sent', data);
-
-
     // var commandRegEx = /[A-Za-z]+/;
     // var command = commandRegEx.exec(data)[0];
     // console.log('command', command);
@@ -60,12 +56,14 @@ var server = net.createServer(function(c) { //'connection' listener
       if (terminationIndex !== -1) {
         client.data = client.data.substring(0, terminationIndex);
         client.isReadingData = false;
+        console.log('Message received.', client);
         sesSender.queue(client);
         client = createClient();
-        c.write('250 Ok: queued as 12345\r\n');
-        console.log('Message received.')
+        c.write('250 Ok: queued as ' + sesSender.messageQueue.length() + '\r\n');
       }
     } else {
+
+      console.log('client sent command', data);
 
       switch (true) {
         case data.indexOf('EHLO') === 0:

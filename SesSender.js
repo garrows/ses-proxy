@@ -12,7 +12,7 @@ function SesSender() {
     console.log('Warning: Missing credentials file.')
   }
 
-  this.messageQueue = async.queue(this.send.bind(this), 1);
+  this.messageQueue = async.queue(this.processClient.bind(this), 1);
 
 }
 
@@ -22,8 +22,12 @@ SesSender.prototype = {
     this.messageQueue.push(client);
   },
 
-  send: function(client, callback) {
+  processClient: function(client, callback) {
+    this.parseData(client);
+    this.send(client, callback);
+  },
 
+  parseData: function(client) {
     var subjectRegEx = /[\n\r].*Subject:\s*([^\n\r]*)/;
     var boundaryRegEx = /.*boundary=\"\s*([^"]*)/;
 
@@ -41,14 +45,20 @@ SesSender.prototype = {
     var boundary;
     try {
       boundary = boundaryRegEx.exec(client.data)[1];
-      console.log('boundary', boundary);
+      console.log('boundary: "' + boundary + '"');
 
       var split = client.data.split(boundary);
 
       for (var i = 2; i < split.length; i++) {
 
-        var contentStartIndex = split[i].indexOf('\r\n\r\n');
-        var content = split[i].substring(contentStartIndex);
+        var contentStartIndex = split[i].indexOf('\r\n\r\n') + 4;
+        var contentEndIndex = split[i].indexOf('\r\n--');
+        console.log('------------------')
+        console.log(split[i]);
+        console.log('------------------')
+        console.log(split[i].length, contentStartIndex, contentEndIndex)
+        var content = split[i].substring(contentStartIndex, contentEndIndex);
+
 
         var isHtml = split[i].indexOf('Content-Type: text/html') !== -1;
         var isText = split[i].indexOf('Content-Type: text/plain') !== -1;
@@ -67,6 +77,11 @@ SesSender.prototype = {
       client.text = client.data;
       client.html = client.data;
     }
+  },
+
+  send: function(client, callback) {
+
+
 
 
     var ses = new AWS.SES();

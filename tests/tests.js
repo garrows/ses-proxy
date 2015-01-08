@@ -30,6 +30,14 @@ describe('Send Email', function() {
       html: '<b>Hello world ✔</b>'
     };
 
+    // var mailOptions = {
+    //   from: 'Homer ✔ <homer@simpsons>',
+    //   to: 'homer@simpsons',
+    //   subject: 'Test Subject ✔',
+    //   text: 'Hi,\r\nFrom Bob ✔',
+    //   html: 'Hi,<br>From <b>Bob ✔</b>'
+    // };
+
     // send mail with defined transport object
     transporter.sendMail(mailOptions, function(error, info) {
       should(error).not.be.ok;

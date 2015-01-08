@@ -26,7 +26,7 @@ SesSender.prototype = {
 
   processClient: function(client, callback) {
     this.parseData(client);
-    this.send(client, callback);
+    this.sendRaw(client, callback);
   },
 
   parseData: function(client) {
@@ -99,7 +99,7 @@ SesSender.prototype = {
           message = (new Buffer(message, 'base64')).toString();
           break;
         default:
-          console.warn('Unknown Content-Transfer-Encoding');
+          console.warn('Unknown Content-Transfer-Encoding', contentTransferEncoding);
       }
       return message;
     } catch (e) {
@@ -135,6 +135,27 @@ SesSender.prototype = {
     };
 
     ses.sendEmail(options, function(err, data) {
+      if (err) {
+        console.error('Error sending SES email', err);
+      } else {
+        console.log('Successfully sent SES email.', data);
+      }
+      callback();
+    });
+  },
+
+  sendRaw: function(client, callback) {
+
+    var ses = new AWS.SES();
+
+    var options = {
+      RawMessage: {
+        Data: client.data
+      },
+      Destinations: client.to
+    };
+
+    ses.sendRawEmail(options, function(err, data) {
       if (err) {
         console.error('Error sending SES email', err);
       } else {

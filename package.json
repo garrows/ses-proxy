@@ -7,7 +7,7 @@
     "eelmail": "bin/cmd.js"
   },
   "scripts": {
-    "test": "mocha tests/tests.js",
+    "test": "mocha tests/index.js",
     "start": "node index.js"
   },
   "repository": {

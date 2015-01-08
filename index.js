@@ -26,7 +26,7 @@ var server = net.createServer(function(c) { //'connection' listener
   var client = createClient();
 
   c.on('end', function() {
-    console.log('client disconnected.', client);
+    console.log('client disconnected.');
   });
 
   c.on('error', function(error) {
@@ -78,14 +78,12 @@ var server = net.createServer(function(c) { //'connection' listener
 
         case data.indexOf('MAIL FROM:') === 0:
           var from = data.substring('MAIL FROM:'.length);
-          console.log('Mail from', from);
           client.from = from;
           c.write('250 2.1.0 Sender OK\r\n');
           break;
 
         case data.indexOf('RCPT TO:') === 0:
           var to = data.substring('RCPT TO:'.length);
-          console.log('Mail to', to);
           client.to.push(to);
           c.write('250 Ok\r\n');
           break;

@@ -4,8 +4,9 @@
   "description": "Proxy SMTP emails to Amazon's SES (Simple Email Service)",
   "main": "index.js",
   "bin": {
-    "eelmail": "bin/cmd.js"
+    "ses-proxy": "bin/cmd.js"
   },
+  "preferGlobal": "true",
   "scripts": {
     "test": "mocha tests/test-send-email.js",
     "start": "node index.js"
@@ -22,7 +23,10 @@
     "amazon",
     "aws"
   ],
-  "author": "Glen Arrowsmith",
+  "author": {
+    "name": "Glen Arrowsmith",
+    "email": "glen.arrowsmith@gmail.com"
+  },
   "license": "GPL v3.0",
   "bugs": {
     "url": "https://github.com/garrows/ses-proxy/issues"
@@ -37,8 +41,6 @@
   "dependencies": {
     "async": "^0.9.0",
     "aws-sdk": "^2.1.4",
-    "mimelib": "^0.2.18",
-    "quoted-printable": "^0.2.1",
-    "utf8": "^2.0.0"
+    "commander": "^2.6.0"
   }
 }

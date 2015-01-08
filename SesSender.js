@@ -1,6 +1,8 @@
 var fs = require('fs'),
   async = require('async'),
-  AWS = require('aws-sdk');
+  AWS = require('aws-sdk'),
+  utf8 = require('utf8'),
+  mimelib = require('mimelib');
 
 function SesSender() {
 
@@ -49,14 +51,18 @@ SesSender.prototype = {
       var split = client.data.split(boundary);
 
       for (var i = 2; i < split.length; i++) {
+        var chunk = split[i];
 
-        var contentStartIndex = split[i].indexOf('\r\n\r\n') + 4;
-        var contentEndIndex = split[i].indexOf('\r\n--');
-        var content = split[i].substring(contentStartIndex, contentEndIndex);
+        var contentStartIndex = chunk.indexOf('\r\n\r\n') + 4;
+        var contentEndIndex = chunk.indexOf('\r\n--');
+        var content = chunk.substring(contentStartIndex, contentEndIndex);
 
+        var isHtml = chunk.indexOf('Content-Type: text/html') !== -1;
+        var isText = chunk.indexOf('Content-Type: text/plain') !== -1;
 
-        var isHtml = split[i].indexOf('Content-Type: text/html') !== -1;
-        var isText = split[i].indexOf('Content-Type: text/plain') !== -1;
+        if (isHtml || isText) {
+          content = this.decodeMessage(chunk, content);
+        }
 
         if (isHtml) {
           client.html = content;
@@ -66,16 +72,43 @@ SesSender.prototype = {
       }
 
     } catch (e) {
-      console.warn('Warning: could not find boundary.', e.stack);
-      client.text = client.data;
-      client.html = client.data;
+      //Could not find boundary. Probably text only.
+      try {
+        var content = client.data.split('\r\n\r\n')[1];
+        content = this.decodeMessage(client.data, content);
+        client.text = content;
+        client.html = content;
+      } catch (e) {
+        console.warn('Warning: could not parse message without boundary.', e.stack);
+        client.text = client.data;
+        client.html = client.data;
+
+      }
+    }
+  },
+
+  decodeMessage: function(dataChunk, message) {
+    var contentTransferEncodingRegEx = /[\n\r].*Content-Transfer-Encoding:\s*([^\n\r]*)/;
+    try {
+      var contentTransferEncoding = contentTransferEncodingRegEx.exec(dataChunk)[1];
+      switch (contentTransferEncoding) {
+        case 'quoted-printable':
+          message = mimelib.decodeQuotedPrintable(message);
+          break;
+        case 'base64':
+          message = (new Buffer(message, 'base64')).toString();
+          break;
+        default:
+          console.warn('Unknown Content-Transfer-Encoding');
+      }
+      return message;
+    } catch (e) {
+      console.log('Couldnt find Content-Transfer-Encoding', dataChunk);
+      return message;
     }
   },
 
   send: function(client, callback) {
-
-
-
 
     var ses = new AWS.SES();
 

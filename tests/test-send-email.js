@@ -26,8 +26,8 @@ describe('Send Email', function() {
       from: 'Glen Arrowsmith ✔ <glen.arrowsmith@itoc.com.au>',
       to: 'glen.arrowsmith@itoc.com.au',
       subject: 'Hello ✔',
-      text: 'Hello world ✔',
-      html: '<b>Hello world ✔</b>'
+      text: 'Hello\nworld ✔',
+      html: '<b>Hello<br>world ✔</b>'
     };
 
     // var mailOptions = {

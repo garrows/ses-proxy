@@ -26,8 +26,8 @@ describe('Parse email', function() {
 
     should(client.data).be.ok;
     client.subject.should.eql('Test Subject =?UTF-8?Q?=E2=9C=94?=');
-    client.html.should.eql('Hi,<br>From <b>Bob =E2=9C=94</b>');
-    client.text.should.eql('Hi,\r\nFrom Bob =E2=9C=94');
+    client.text.should.eql('Hi,\r\nFrom Bob ✔');
+    client.html.should.eql('Hi,<br>From <b>Bob ✔</b>');
 
   });
 
@@ -40,8 +40,22 @@ describe('Parse email', function() {
 
     should(client.data).be.ok;
     client.subject.should.eql('=?utf-8?Q?Test_Subject_=E2=9C=94?=');
-    client.text.should.eql('Hi,\r\n=46rom Bob =E2=9C=94=\r\n');
-    client.html.should.eql('<html><head><meta http-equiv=3D"Content-Type" content=3D"text/html =\r\ncharset=3Dutf-8"></head><body style=3D"word-wrap: break-word; =\r\n-webkit-nbsp-mode: space; -webkit-line-break: after-white-space;" =\r\nclass=3D"">Hi,<div class=3D"">=46rom <b =\r\nclass=3D"">Bob&nbsp;=E2=9C=94</b></div></body></html>=\r\n');
+    client.text.should.eql('Hi,\r\nFrom Bob ✔');
+    client.html.should.eql('<html><head><meta http-equiv="Content-Type" content="text/html charset=utf-8"></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;" class="">Hi,<div class="">From <b class="">Bob&nbsp;✔</b></div></body></html>');
+
+  });
+
+  it('should parse imail emoticon heavy, text only email correctly', function() {
+
+    var client = createClient();
+    client.data = 'From: Glen Arrowsmith <glen.arrowsmith@itoc.com.au>\r\nContent-Type: text/plain; charset=utf-8\r\nContent-Transfer-Encoding: base64\r\nSubject: =?utf-8?Q?Test_=E2=9C=88=F0=9F=90=B8?=\r\nMessage-Id: <D075E712-828D-4A06-A6A8-BA20BFA08F8B@itoc.com.au>\r\nDate: Thu, 8 Jan 2015 13:41:43 +1000\r\nTo: glen.arrowsmith@itoc.com.au\r\nMime-Version: 1.0 (Mac OS X Mail 8.1 \\(1993\\))\r\nX-Mailer: Apple Mail (2.1993)\r\n\r\n8J+QuPCfkJk=';
+
+    sesSender.parseData(client);
+
+    should(client.data).be.ok;
+    client.subject.should.eql('=?utf-8?Q?Test_=E2=9C=88=F0=9F=90=B8?=');
+    client.text.should.eql('🐸🐙');
+    client.html.should.eql('🐸🐙');
 
   });
 

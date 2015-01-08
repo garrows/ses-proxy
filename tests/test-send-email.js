@@ -4,15 +4,29 @@ var should = require('should'),
 
 
 
+
+
 describe('Send Email', function() {
+
+  before(function(done) {
+    var server = require('../index.js');
+    server(2525);
+    setTimeout(done, 200);
+  });
+  after(function(done) {
+    //Wait a bit for the SES api call.
+    setTimeout(done, 1500);
+  });
 
   it('should send an email successfully', function(testsDone) {
     this.timeout(5000);
 
+
+
     // create reusable transporter object using SMTP transport
     var transporter = nodemailer.createTransport(smtpTransport({
       host: 'localhost',
-      port: 25,
+      port: 2525,
       // debug: true
     }));
 
@@ -23,20 +37,12 @@ describe('Send Email', function() {
 
     // setup e-mail data with unicode symbols
     var mailOptions = {
-      from: 'Glen Arrowsmith ✔ <glen.arrowsmith@itoc.com.au>',
-      to: 'glen.arrowsmith@itoc.com.au',
+      from: process.env.FROM ? process.env.FROM : 'lisa@example.com',
+      to: process.env.TO ? process.env.TO : 'home@example.com',
       subject: 'Hello ✔',
       text: 'Hello\nworld ✔',
       html: '<b>Hello<br>world ✔</b>'
     };
-
-    // var mailOptions = {
-    //   from: 'Homer ✔ <homer@simpsons>',
-    //   to: 'homer@simpsons',
-    //   subject: 'Test Subject ✔',
-    //   text: 'Hi,\r\nFrom Bob ✔',
-    //   html: 'Hi,<br>From <b>Bob ✔</b>'
-    // };
 
     // send mail with defined transport object
     transporter.sendMail(mailOptions, function(error, info) {

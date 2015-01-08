@@ -10,9 +10,7 @@ var createClient = function() {
     to: [],
     subject: '',
     isReadingData: false,
-    data: '',
-    html: null,
-    text: null,
+    data: ''
   };
 }
 
@@ -95,11 +93,6 @@ var server = net.createServer(function(c) { //'connection' listener
 
           break;
 
-          // case data.indexOf('AUTH') === 0:
-          //   console.log("AUTHTHHHHTHTHTH")
-          //   c.write('250 localhost\r\n');
-          //   break;
-
         default:
           c.write('500 unrecognized command\r\n');
           console.log('500 unrecognized command');
@@ -110,6 +103,37 @@ var server = net.createServer(function(c) { //'connection' listener
 
 });
 
-server.listen(25, function() {
-  console.log('Started SES-Proxy');
+var port = 25;
+var portSpecified = false;
+
+var start = function(port) {
+  server.listen(port);
+};
+
+server.on('listening', function(err) {
+  console.log('Started SES-Proxy on port', port);
 });
+
+server.on('error', function(err) {
+  console.log('Error starting server on port', port, err.code);
+  if (err.code == 'EACCES' || err.code == 'EADDRINUSE') {
+    if (portSpecified) {
+      console.log('Aborting');
+    } else {
+      port = 2525;
+      console.log('Trying port', port);
+      start(port)
+    }
+  } else {
+    throw e;
+  }
+
+});
+
+module.exports = function(optPort) {
+  if (optPort) {
+    portSpecified = true;
+    port = optPort;
+  }
+  start(port);
+}

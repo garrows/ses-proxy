@@ -1,6 +1,6 @@
 {
   "name": "ses-proxy",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Proxy SMTP emails to Amazon's SES (Simple Email Service)",
   "main": "index.js",
   "bin": {

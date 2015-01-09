@@ -3,7 +3,7 @@ ses-proxy
 
 Proxy SMTP emails to Amazon's SES (Simple Email Service)
 
-This is particularly useful if your server only has internet access via a HTTP proxy.
+This is particularly useful if your server only has internet access via a proxy.
 
 
 Setup
@@ -11,11 +11,6 @@ Setup
 Install command
 ```
 npm install -g ses-proxy
-```
-
-Export http proxy variable if required
-```
-export http_proxy=http://proxy.example.com:3128/
 ```
 
 The AWS-SDK will pickup your servers IAM credentials if it has them. Otherwise use a config file in the following format.

@@ -7,6 +7,7 @@ var should = require('should'),
 
 
 describe('Send Email', function() {
+  this.timeout(5000);
 
   before(function(done) {
     var server = require('../index.js');
@@ -15,11 +16,11 @@ describe('Send Email', function() {
   });
   after(function(done) {
     //Wait a bit for the SES api call.
-    setTimeout(done, 1500);
+    setTimeout(done, 3000);
   });
 
   it('should send an email successfully', function(testsDone) {
-    this.timeout(5000);
+
 
 
 

@@ -1,12 +1,13 @@
 var fs = require('fs'),
   async = require('async'),
   AWS = require('aws-sdk'),
+  proxyAgent = require('proxy-agent'),
   path = require('path');
 
-function SesSender(optConfig) {
+function SesSender(opts) {
   var credentialsFilePath = './ses-credentials.json';
-  if (optConfig) {
-    credentialsFilePath = optConfig;
+  if (opts.config) {
+    credentialsFilePath = opts.config;
   }
 
   if (fs.existsSync(credentialsFilePath)) {
@@ -15,6 +16,21 @@ function SesSender(optConfig) {
     AWS.config.loadFromPath(path.join(process.cwd(), credentialsFilePath));
   } else {
     console.warn('Warning: Can not find credentials file.')
+  }
+
+  var proxy = process.env.http_proxy;
+  proxy = opts.proxy ? opts.proxy : proxy;
+
+  if (proxy) {
+    console.log('Using http proxy', proxy);
+    AWS.config.update({
+      httpOptions: {
+        agent: proxyAgent(proxy, true)
+      }
+    });
+    AWS.config.update({
+      sslEnabled: false
+    });
   }
 
   this.messageQueue = async.queue(this.processClient.bind(this), 1);
@@ -42,9 +58,12 @@ SesSender.prototype = {
       Destinations: client.to
     };
 
+    console.log('Attempting to send SES message');
     ses.sendRawEmail(options, function(err, data) {
       if (err) {
         console.error('Error sending SES email', err);
+        console.error(err.stack);
+        console.log(this.httpResponse.body.toString());
       } else {
         console.log('Successfully sent SES email.', data);
       }

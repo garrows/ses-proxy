@@ -105,7 +105,7 @@ var server = net.createServer(function(c) { //'connection' listener
 
 var port = 25;
 var portSpecified = false;
-var config;
+var options;
 
 var start = function(port) {
   server.listen(port);
@@ -113,7 +113,7 @@ var start = function(port) {
 
 server.on('listening', function(err) {
   console.log('Started SES-Proxy on port', port);
-  sesSender = new SesSender(config);
+  sesSender = new SesSender(options);
 });
 
 server.on('error', function(err) {
@@ -132,11 +132,11 @@ server.on('error', function(err) {
 
 });
 
-module.exports = function(optPort, optConfig) {
-  if (optPort) {
+module.exports = function(opts) {
+  options = opts;
+  if (options.port) {
     portSpecified = true;
-    port = optPort;
+    port = options.port;
   }
-  config = optConfig;
   start(port);
 }

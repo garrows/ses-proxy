@@ -18,18 +18,15 @@ function SesSender(opts) {
     console.warn('Warning: Can not find credentials file.')
   }
 
-  var proxy = process.env.http_proxy;
+  var proxy = process.env.https_proxy;
   proxy = opts.proxy ? opts.proxy : proxy;
 
   if (proxy) {
-    console.log('Using http proxy', proxy);
+    console.log('Using https proxy', proxy);
     AWS.config.update({
       httpOptions: {
         agent: proxyAgent(proxy, true)
       }
-    });
-    AWS.config.update({
-      sslEnabled: false
     });
   }
 
@@ -63,7 +60,7 @@ SesSender.prototype = {
       if (err) {
         console.error('Error sending SES email', err);
         console.error(err.stack);
-        console.log(this.httpResponse.body.toString());
+        console.log(this.httpResponse && this.httpResponse.body && this.httpResponse.body.toString());
       } else {
         console.log('Successfully sent SES email.', data);
       }

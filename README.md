@@ -31,6 +31,14 @@ Run
 ```
 Note you don't need sudo if you're using a high port number.
 
+Proxy
+-----
+If you have the `https_proxy` environment variable set, the SES API calls will go through that.
+
+If you want to specify another proxy use the `--proxy` flag.
+```
+[sudo] ses-proxy --config ./ses-credentials.json --port 25 --proxy http://proxy.example.com:3128/
+```
 
 Testing
 -------
